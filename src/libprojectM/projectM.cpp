@@ -597,19 +597,26 @@ static void *thread_callback(void *prjm) {
         // Start at end ptr- this allows next/previous to easily be done from this position.
         *m_presetPos = m_presetChooser->end();
 
-        // Load idle preset
-        std::cerr << "[projectM] Allocating idle preset..." << std::endl;
-        m_activePreset = m_presetLoader->loadPreset
-        ("idle://Geiss & Sperl - Feedback (projectM idle HDR mix).milk");
-
-        renderer->SetPipeline(m_activePreset->pipeline());
-
         // Case where no valid presets exist in directory. Could also mean
         // playlist initialization was deferred
         if (m_presetChooser->empty())
         {
+            // Load idle preset
+            std::cerr << "[projectM] Allocating idle preset..." << std::endl;
+            m_activePreset = m_presetLoader->loadPreset
+                              ("idle://Rovastar & Fvese - Stranger Minds (idle-ized).milk");
+            renderer->SetPipeline (m_activePreset->pipeline());
+
             //std::cerr << "[projectM] warning: no valid files found in preset directory \""
             //<< m_presetLoader->directoryName() << "\"" << std::endl;
+        }
+        else if (settings().shuffleEnabled)
+        {
+            /*
+             * Starting at the same preset every time we launch is boring.  Pick a
+             * preset at random.
+             */
+            selectRandom (true);
         }
 
         _matcher = new RenderItemMatcher();

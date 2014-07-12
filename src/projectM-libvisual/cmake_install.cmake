@@ -1,4 +1,4 @@
-# Install script for directory: /home/carm/workspace/projectm-trunk-release/src/projectM-libvisual
+# Install script for directory: /home/igor/projectm/src/projectM-libvisual
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ IF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     STRING(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   ELSE(BUILD_TYPE)
-    SET(CMAKE_INSTALL_CONFIG_NAME "Release")
+    SET(CMAKE_INSTALL_CONFIG_NAME "")
   ENDIF(BUILD_TYPE)
   MESSAGE(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 ENDIF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
@@ -39,9 +39,15 @@ IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
          FILE "$ENV{DESTDIR}/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor/libprojectM_libvisual.so"
          RPATH "")
   ENDIF()
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
    "/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor/libprojectM_libvisual.so")
-FILE(INSTALL DESTINATION "/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor" TYPE SHARED_LIBRARY FILES "/home/carm/workspace/projectm-trunk-release/src/projectM-libvisual/libprojectM_libvisual.so")
+  IF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+  IF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+FILE(INSTALL DESTINATION "/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor" TYPE SHARED_LIBRARY FILES "/home/igor/projectm/src/projectM-libvisual/libprojectM_libvisual.so")
   IF(EXISTS "$ENV{DESTDIR}/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor/libprojectM_libvisual.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}/usr/lib/x86_64-linux-gnu/libvisual-0.4/actor/libprojectM_libvisual.so")
     FILE(RPATH_REMOVE

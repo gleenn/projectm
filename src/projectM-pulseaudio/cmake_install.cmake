@@ -1,4 +1,4 @@
-# Install script for directory: /home/carm/workspace/projectm-trunk-release/src/projectM-pulseaudio
+# Install script for directory: /home/igor/projectm/src/projectM-pulseaudio
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -12,7 +12,7 @@ IF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     STRING(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   ELSE(BUILD_TYPE)
-    SET(CMAKE_INSTALL_CONFIG_NAME "Release")
+    SET(CMAKE_INSTALL_CONFIG_NAME "")
   ENDIF(BUILD_TYPE)
   MESSAGE(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 ENDIF(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
@@ -39,9 +39,15 @@ IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
          FILE "$ENV{DESTDIR}/usr/local/bin/projectM-pulseaudio"
          RPATH "")
   ENDIF()
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
    "/usr/local/bin/projectM-pulseaudio")
-FILE(INSTALL DESTINATION "/usr/local/bin" TYPE EXECUTABLE FILES "/home/carm/workspace/projectm-trunk-release/src/projectM-pulseaudio/projectM-pulseaudio")
+  IF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+  IF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+FILE(INSTALL DESTINATION "/usr/local/bin" TYPE EXECUTABLE FILES "/home/igor/projectm/src/projectM-pulseaudio/projectM-pulseaudio")
   IF(EXISTS "$ENV{DESTDIR}/usr/local/bin/projectM-pulseaudio" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}/usr/local/bin/projectM-pulseaudio")
     FILE(RPATH_REMOVE
@@ -53,8 +59,14 @@ FILE(INSTALL DESTINATION "/usr/local/bin" TYPE EXECUTABLE FILES "/home/carm/work
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 
 IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  list(APPEND CPACK_ABSOLUTE_DESTINATION_FILES
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
    "/usr/local/share/applications/projectM-pulseaudio.desktop")
-FILE(INSTALL DESTINATION "/usr/local/share/applications" TYPE FILE FILES "/home/carm/workspace/projectm-trunk-release/src/projectM-pulseaudio/projectM-pulseaudio.desktop")
+  IF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+  IF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  ENDIF (CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+FILE(INSTALL DESTINATION "/usr/local/share/applications" TYPE FILE FILES "/home/igor/projectm/src/projectM-pulseaudio/projectM-pulseaudio.desktop")
 ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
 

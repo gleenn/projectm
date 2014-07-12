@@ -1,30 +1,13 @@
 # This file will be configured to contain variables for CPack. These variables
 # should be set in the CMake list file of the project before CPack module is
-# included. Example variables are:
-#   CPACK_GENERATOR                     - Generator used to create package
-#   CPACK_INSTALL_CMAKE_PROJECTS        - For each project (path, name, component)
-#   CPACK_CMAKE_GENERATOR               - CMake Generator used for the projects
-#   CPACK_INSTALL_COMMANDS              - Extra commands to install components
-#   CPACK_INSTALLED_DIRECTORIES           - Extra directories to install
-#   CPACK_PACKAGE_DESCRIPTION_FILE      - Description file for the package
-#   CPACK_PACKAGE_DESCRIPTION_SUMMARY   - Summary of the package
-#   CPACK_PACKAGE_EXECUTABLES           - List of pairs of executables and labels
-#   CPACK_PACKAGE_FILE_NAME             - Name of the package generated
-#   CPACK_PACKAGE_ICON                  - Icon used for the package
-#   CPACK_PACKAGE_INSTALL_DIRECTORY     - Name of directory for the installer
-#   CPACK_PACKAGE_NAME                  - Package project name
-#   CPACK_PACKAGE_VENDOR                - Package project vendor
-#   CPACK_PACKAGE_VERSION               - Package project version
-#   CPACK_PACKAGE_VERSION_MAJOR         - Package project version (major)
-#   CPACK_PACKAGE_VERSION_MINOR         - Package project version (minor)
-#   CPACK_PACKAGE_VERSION_PATCH         - Package project version (patch)
-
-# There are certain generator specific ones
-
-# NSIS Generator:
-#   CPACK_PACKAGE_INSTALL_REGISTRY_KEY  - Name of the registry key for the installer
-#   CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS - Extra commands used during uninstall
-#   CPACK_NSIS_EXTRA_INSTALL_COMMANDS   - Extra commands used during install
+# included. The list of available CPACK_xxx variables and their associated
+# documentation may be obtained using
+#  cpack --help-variable-list
+#
+# Some variables are common to all generators (e.g. CPACK_PACKAGE_NAME)
+# and some are specific to a generator
+# (e.g. CPACK_NSIS_EXTRA_INSTALL_COMMANDS). The generator specific variables
+# usually begin with CPACK_<GENNAME>_xxxx.
 
 
 SET(CPACK_BINARY_BUNDLE "")
@@ -39,6 +22,7 @@ SET(CPACK_BINARY_STGZ "ON")
 SET(CPACK_BINARY_TBZ2 "OFF")
 SET(CPACK_BINARY_TGZ "ON")
 SET(CPACK_BINARY_TZ "ON")
+SET(CPACK_BINARY_WIX "")
 SET(CPACK_BINARY_ZIP "")
 SET(CPACK_CMAKE_GENERATOR "Unix Makefiles")
 SET(CPACK_COMPONENT_UNSPECIFIED_HIDDEN "TRUE")
@@ -46,7 +30,7 @@ SET(CPACK_COMPONENT_UNSPECIFIED_REQUIRED "TRUE")
 SET(CPACK_GENERATOR "TGZ;TBZ2")
 SET(CPACK_GENERATORS "TGZ")
 SET(CPACK_IGNORE_FILES "Makefile;CMakeCache.txt;CMakeFiles/;.*.gz;.*.bz2;.*.Z;.*.zip;.*svn")
-SET(CPACK_INSTALLED_DIRECTORIES "/home/carm/workspace/projectm-trunk-release;/")
+SET(CPACK_INSTALLED_DIRECTORIES "/home/igor/projectm;/")
 SET(CPACK_INSTALL_CMAKE_PROJECTS "")
 SET(CPACK_INSTALL_PREFIX "/usr/local")
 SET(CPACK_MODULE_PATH "")
@@ -55,7 +39,7 @@ SET(CPACK_NSIS_INSTALLER_ICON_CODE "")
 SET(CPACK_NSIS_INSTALLER_MUI_ICON_CODE "")
 SET(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
 SET(CPACK_NSIS_PACKAGE_NAME "projectM-complete 2.1.0")
-SET(CPACK_OUTPUT_CONFIG_FILE "/home/carm/workspace/projectm-trunk-release/CPackConfig.cmake")
+SET(CPACK_OUTPUT_CONFIG_FILE "/home/igor/projectm/CPackConfig.cmake")
 SET(CPACK_PACKAGE_DEFAULT_LOCATION "/")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "/usr/share/cmake-2.8/Templates/CPack.GenericDescription.txt")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "projectM-complete built using CMake")
@@ -77,8 +61,8 @@ SET(CPACK_SOURCE_CYGWIN "")
 SET(CPACK_SOURCE_GENERATOR "TGZ;TBZ2")
 SET(CPACK_SOURCE_GENERATORS "TGZ")
 SET(CPACK_SOURCE_IGNORE_FILES "Makefile;CMakeCache.txt;CMakeFiles/;.*.gz;.*.bz2;.*.Z;.*.zip;.*svn")
-SET(CPACK_SOURCE_INSTALLED_DIRECTORIES "/home/carm/workspace/projectm-trunk-release;/")
-SET(CPACK_SOURCE_OUTPUT_CONFIG_FILE "/home/carm/workspace/projectm-trunk-release/CPackSourceConfig.cmake")
+SET(CPACK_SOURCE_INSTALLED_DIRECTORIES "/home/igor/projectm;/")
+SET(CPACK_SOURCE_OUTPUT_CONFIG_FILE "/home/igor/projectm/CPackSourceConfig.cmake")
 SET(CPACK_SOURCE_PACKAGE_FILE_NAME "projectM-complete-2.1.0-Source")
 SET(CPACK_SOURCE_TBZ2 "ON")
 SET(CPACK_SOURCE_TGZ "ON")
@@ -89,3 +73,4 @@ SET(CPACK_SOURCE_ZIP "OFF")
 SET(CPACK_STRIP_FILES "")
 SET(CPACK_SYSTEM_NAME "Linux")
 SET(CPACK_TOPLEVEL_TAG "Linux-Source")
+SET(CPACK_WIX_SIZEOF_VOID_P "8")
