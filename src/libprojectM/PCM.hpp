@@ -37,23 +37,9 @@ DLLEXPORT
 #endif 
 PCM {
 public:
-    float **PCMd;
-    int start;
-
-    /** Use wave smoothing */
-    float waveSmoothing;
-
-    int *ip;
-    double *w;
-    int newsamples;
-
     int numsamples; //size of new PCM info
     float *pcmdataL;     //holder for most recent pcm data
     float *pcmdataR;     //holder for most recent pcm data
-
-    /** PCM data */
-    float vdataL[512];  //holders for FFT data (spectrum)
-    float vdataR[512];
 
     static int maxsamples;
     PCM();
@@ -65,10 +51,24 @@ public:
     void addPCM8( unsigned char [2][1024]);
 	void addPCM8_512( const unsigned char [2][512]);
     void getPCM(float *data, int samples, int channel, int freq, float smoothing, int derive);
+
+private:
     void freePCM();
     int getPCMnew(float *PCMdata, int channel, int freq, float smoothing, int derive,int reset);
 
+    float **PCMd;
+    int start;
+    int newsamples;
 
+    /** Use wave smoothing */
+    float waveSmoothing;
+
+    int *ip;
+    double *w;
+
+    /** PCM data */
+    float vdataL[512];  //holders for FFT data (spectrum)
+    float vdataR[512];
   };
 
 #endif /** !_PCM_H */
