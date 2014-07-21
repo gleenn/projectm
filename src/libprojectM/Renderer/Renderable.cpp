@@ -270,7 +270,7 @@ void MotionVectors::Draw(RenderContext &context)
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glPointSize(length);
+	glPointSize(length > 0 ? length : 1);
 	glColor4f(r, g, b, a * masterAlpha);
 
 	if (x_num + y_num < 600)
