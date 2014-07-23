@@ -240,6 +240,9 @@ public:
 	return _settings.shuffleEnabled;
   }
 
+  /// Returns the currently playing preset name.
+  std::string getCurrentPresetName() const;
+
   /// Occurs when active preset has switched. Switched to index is returned
   virtual void presetSwitchedEvent(bool isHardCut, unsigned int index) const {};
   virtual void shuffleEnabledValueChanged(bool isEnabled) const {};

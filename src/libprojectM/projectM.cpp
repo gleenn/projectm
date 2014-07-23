@@ -818,6 +818,19 @@ void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset) {
 	#endif
     }
 
+std::string projectM::getCurrentPresetName() const {
+    #ifdef SYNC_PRESET_SWITCHES
+    pthread_mutex_lock(&preset_mutex);
+    #endif
+
+    std::string result = renderer->presetName();
+
+    #ifdef SYNC_PRESET_SWITCHES
+    pthread_mutex_unlock(&preset_mutex);
+    #endif
+    return result;
+}
+
     void projectM::setPresetLock ( bool isLocked )
     {
         renderer->noSwitch = isLocked;
