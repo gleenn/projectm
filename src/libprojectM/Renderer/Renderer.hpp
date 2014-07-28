@@ -97,7 +97,7 @@ private:
   RenderContext renderContext;
   //per pixel equation variables
 #ifdef USE_CG
-  ShaderEngine shaderEngine;
+  ShaderEngine* shaderEngine;
 #endif
   std::string m_presetName;
 

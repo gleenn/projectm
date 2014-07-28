@@ -9,8 +9,9 @@
 #include "ShaderEngine.hpp"
 #include "BeatDetect.hpp"
 
-ShaderEngine::ShaderEngine()
+ShaderEngine::ShaderEngine(const std::string& shadersDir)
 {
+	this->shadersDir = shadersDir;
 #ifdef USE_CG
 	SetupCg();
 #endif
@@ -23,11 +24,10 @@ ShaderEngine::~ShaderEngine()
 
 #ifdef USE_CG
 
-void ShaderEngine::setParams(const int texsize, const unsigned int texId, const float aspect, std::string shadersDir, BeatDetect *beatDetect,
+void ShaderEngine::setParams(const int texsize, const unsigned int texId, const float aspect, BeatDetect *beatDetect,
 		TextureManager *textureManager)
 {
 	mainTextureId = texId;
-	this->shadersDir = shadersDir;
 	this->beatDetect = beatDetect;
 	this->textureManager = textureManager;
 	this->aspect = aspect;
@@ -343,7 +343,7 @@ void ShaderEngine::checkForCgError(const char *situation)
 void ShaderEngine::SetupCg()
 {
 	std::string line;
-	std::ifstream myfile(shadersDir + "/projectM.cg");
+	std::ifstream myfile((shadersDir + "/projectM.cg").c_str());
 	if (myfile.is_open())
 	{
 		while (!myfile.eof())
@@ -355,9 +355,9 @@ void ShaderEngine::SetupCg()
 	}
 
 	else
-		std::cout << "Unable to load projectM shader template" << std::endl;
+		std::cout << "Unable to load projectM shader template in " << shadersDir << std::endl;
 
-	std::ifstream myfile2(shadersDir + "/blur.cg");
+	std::ifstream myfile2((shadersDir + "/blur.cg").c_str());
 	if (myfile2.is_open())
 	{
 		while (!myfile2.eof())
@@ -369,7 +369,7 @@ void ShaderEngine::SetupCg()
 	}
 
 	else
-		std::cout << "Unable to load blur template" << std::endl;
+		std::cout << "Unable to load blur template in " << shadersDir << std::endl;
 
 	myCgContext = cgCreateContext();
 	checkForCgError("creating context");

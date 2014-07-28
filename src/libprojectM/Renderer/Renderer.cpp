@@ -25,6 +25,8 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize,
 	int x;
 	int y;
 
+	this->shaderEngine = new ShaderEngine(shadersDir);
+
 	this->totalframes = 1;
 	this->noSwitch = false;
 	this->showfps = false;
@@ -111,8 +113,8 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize,
 
 
 #ifdef USE_CG
-	shaderEngine.setParams(renderTarget->texsize, renderTarget->textureID[1], aspect,
-		shadersDir, beatDetect, textureManager);
+	shaderEngine->setParams(renderTarget->texsize, renderTarget->textureID[1], aspect,
+		beatDetect, textureManager);
 #endif
 
 }
@@ -121,9 +123,9 @@ void Renderer::SetPipeline(Pipeline &pipeline)
 {
 	currentPipe = &pipeline;
 #ifdef USE_CG
-	shaderEngine.reset();
-	shaderEngine.loadShader(pipeline.warpShader);
-	shaderEngine.loadShader(pipeline.compositeShader);
+	shaderEngine->reset();
+	shaderEngine->loadShader(pipeline.warpShader);
+	shaderEngine->loadShader(pipeline.compositeShader);
 #endif
 }
 
@@ -176,7 +178,7 @@ void Renderer::SetupPass1(const Pipeline &pipeline, const PipelineContext &pipel
 	glLoadIdentity();
 
 #ifdef USE_CG
-	shaderEngine.RenderBlurTextures(pipeline, pipelineContext, renderTarget->texsize);
+	shaderEngine->RenderBlurTextures(pipeline, pipelineContext, renderTarget->texsize);
 #endif
 }
 
@@ -288,11 +290,11 @@ void Renderer::RenderFrame(const Pipeline &pipeline, const PipelineContext &pipe
 	SetupPass1(pipeline, pipelineContext);
 
 #ifdef USE_CG
-	shaderEngine.enableShader(currentPipe->warpShader, pipeline, pipelineContext);
+	shaderEngine->enableShader(currentPipe->warpShader, pipeline, pipelineContext);
 #endif
 	Interpolation(pipeline);
 #ifdef USE_CG
-	shaderEngine.disableShader();
+	shaderEngine->disableShader();
 #endif
 
 	RenderItems(pipeline, pipelineContext);
@@ -434,6 +436,9 @@ Renderer::~Renderer()
 	//	std::cerr << "freeing title fonts finished" << std::endl;
 #endif
 	//	std::cerr << "exiting destructor" << std::endl;
+#if USE_CG
+	delete shaderEngine;
+#endif
 }
 
 void Renderer::reset(int w, int h)
@@ -443,7 +448,7 @@ void Renderer::reset(int w, int h)
 	this -> vh = h;
 
 #if USE_CG
-	shaderEngine.setAspect(aspect);
+	shaderEngine->setAspect(aspect);
 #endif
 
 	glShadeModel(GL_SMOOTH);
@@ -727,7 +732,7 @@ void Renderer::draw_stats()
 	other_font->Render(buffer);
 #ifdef USE_CG
 	glRasterPos2f(0, -.29 + offset);
-	sprintf(buffer, "shader profile: %s", shaderEngine.profileName.c_str());
+	sprintf(buffer, "shader profile: %s", shaderEngine->profileName.c_str());
 	other_font->Render(buffer);
 
 	glRasterPos2f(0, -.33 + offset);
@@ -780,7 +785,7 @@ void Renderer::CompositeOutput(const Pipeline &pipeline, const PipelineContext &
 	glEnable(GL_TEXTURE_2D);
 
 #ifdef USE_CG
-	shaderEngine.enableShader(currentPipe->compositeShader, pipeline, pipelineContext);
+	shaderEngine->enableShader(currentPipe->compositeShader, pipeline, pipelineContext);
 #endif
 
 	float tex[4][2] =
@@ -812,7 +817,7 @@ void Renderer::CompositeOutput(const Pipeline &pipeline, const PipelineContext &
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 #ifdef USE_CG
-	shaderEngine.disableShader();
+	shaderEngine->disableShader();
 #endif
 
 	for (std::vector<RenderItem*>::const_iterator pos = pipeline.compositeDrawables.begin(); pos
