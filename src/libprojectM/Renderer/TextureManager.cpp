@@ -31,7 +31,9 @@
 
 
 
-TextureManager::TextureManager(const std::string _presetURL): presetURL(_presetURL)
+TextureManager::TextureManager(
+    const std::string _presetURL, std::string _texturesDir)
+    : presetURL(_presetURL), texturesDir(_texturesDir)
 {
 #ifdef USE_DEVIL
 ilInit();
@@ -212,7 +214,7 @@ unsigned int TextureManager::getTextureMemorySize()
 
 void TextureManager::loadTextureDir()
 {
-	std::string dirname = CMAKE_INSTALL_PREFIX "/share/projectM/textures";
+	std::string dirname = texturesDir;
 
 	  DIR * m_dir;
 

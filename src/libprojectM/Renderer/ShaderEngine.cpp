@@ -23,10 +23,11 @@ ShaderEngine::~ShaderEngine()
 
 #ifdef USE_CG
 
-void ShaderEngine::setParams(const int texsize, const unsigned int texId, const float aspect, BeatDetect *beatDetect,
+void ShaderEngine::setParams(const int texsize, const unsigned int texId, const float aspect, std::string shadersDir, BeatDetect *beatDetect,
 		TextureManager *textureManager)
 {
 	mainTextureId = texId;
+	this->shadersDir = shadersDir;
 	this->beatDetect = beatDetect;
 	this->textureManager = textureManager;
 	this->aspect = aspect;
@@ -342,7 +343,7 @@ void ShaderEngine::checkForCgError(const char *situation)
 void ShaderEngine::SetupCg()
 {
 	std::string line;
-	std::ifstream myfile(CMAKE_INSTALL_PREFIX "/share/projectM/shaders/projectM.cg");
+	std::ifstream myfile(shadersDir + "/projectM.cg");
 	if (myfile.is_open())
 	{
 		while (!myfile.eof())
@@ -354,9 +355,9 @@ void ShaderEngine::SetupCg()
 	}
 
 	else
-		std::cout << "Unable to load shader template \"" << CMAKE_INSTALL_PREFIX "/share/projectM/shaders/projectM.cg\"" << std::endl;
+		std::cout << "Unable to load projectM shader template" << std::endl;
 
-	std::ifstream myfile2(CMAKE_INSTALL_PREFIX "/share/projectM/shaders/blur.cg");
+	std::ifstream myfile2(shadersDir + "/blur.cg");
 	if (myfile2.is_open())
 	{
 		while (!myfile2.eof())

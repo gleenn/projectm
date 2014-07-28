@@ -9,6 +9,7 @@
 class TextureManager
 {
   std::string presetURL;
+  std::string texturesDir;
   std::map<std::string,unsigned int> textures;
   std::map<std::string,unsigned int> heights;
   std::map<std::string,unsigned int> widths;
@@ -17,7 +18,7 @@ class TextureManager
   std::vector<std::string> random_textures;
 public:
   ~TextureManager();
-  TextureManager(std::string _presetURL);
+  TextureManager(std::string _presetURL, std::string texturesDir);
   //void unloadTextures(const PresetOutputs::cshape_container &shapes);
   void Clear();
   void Preload();

@@ -14,10 +14,13 @@
 
 class Preset;
 
-Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetect *beatDetect, std::string _presetURL,
+Renderer::Renderer(int width, int height, int gx, int gy, int texsize,
+		BeatDetect *beatDetect, std::string _presetURL,
+		std::string shadersDir, std::string texturesDir,
 		std::string _titlefontURL, std::string _menufontURL) :
-	title_fontURL(_titlefontURL), menu_fontURL(_menufontURL), presetURL(_presetURL), m_presetName("None"), vw(width),
-			vh(height), texsize(texsize), mesh(gx, gy)
+	title_fontURL(_titlefontURL), menu_fontURL(_menufontURL),
+	presetURL(_presetURL), m_presetName("None"), vw(width),
+	vh(height), texsize(texsize), mesh(gx, gy)
 {
 	int x;
 	int y;
@@ -42,7 +45,7 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetec
 
 	/// @bug put these on member init list
 	this->renderTarget = new RenderTarget(texsize, width, height);
-	this->textureManager = new TextureManager(presetURL);
+	this->textureManager = new TextureManager(presetURL, texturesDir);
 	this->beatDetect = beatDetect;
 
 #ifdef USE_FTGL
@@ -108,7 +111,8 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetec
 
 
 #ifdef USE_CG
-	shaderEngine.setParams(renderTarget->texsize, renderTarget->textureID[1], aspect, beatDetect, textureManager);
+	shaderEngine.setParams(renderTarget->texsize, renderTarget->textureID[1], aspect,
+		shadersDir, beatDetect, textureManager);
 #endif
 
 }
@@ -121,6 +125,13 @@ void Renderer::SetPipeline(Pipeline &pipeline)
 	shaderEngine.loadShader(pipeline.warpShader);
 	shaderEngine.loadShader(pipeline.compositeShader);
 #endif
+}
+
+static void CheckError(const char* msg) {
+  int err = glGetError();
+  if (err != GL_NO_ERROR) {
+    fprintf(stderr, "ProjectM rendering ended with err=0x%x : %s\n", err, msg);
+  }
 }
 
 void Renderer::ResetTextures()

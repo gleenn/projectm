@@ -21,7 +21,7 @@ OPTION (USE_OPENMP "Use OpenMP and OMPTL for multi-core parallelization" ON)
 
 OPTION (USE_NATIVE_GLEW "Use projectM's native implemention of GLEW." OFF)
 
-OPTION (USE_CG "Use Cg for Pixel Shader support" OFF)
+OPTION (USE_CG "Use Cg for Pixel Shader support" ON)
 
 OPTION (BUILD_PROJECTM_STATIC "Build the projectM target library in the platform's native static (NOT shared) format." OFF)
 

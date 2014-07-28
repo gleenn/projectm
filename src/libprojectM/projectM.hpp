@@ -139,6 +139,8 @@ public:
 
   projectM(std::string config_file, int flags = FLAG_NONE);
   projectM(Settings settings, int flags = FLAG_NONE);
+  projectM(Settings settings, const std::string& shadersDir,
+      const std::string& texturesDir, int flags);
 
   //DLLEXPORT projectM(int gx, int gy, int fps, int texsize, int width, int height,std::string preset_url,std::string title_fonturl, std::string title_menuurl);
 
@@ -270,6 +272,8 @@ private:
   PipelineContext * _pipelineContext;
   PipelineContext * _pipelineContext2;
   Settings _settings;
+  std::string shadersDir;
+  std::string texturesDir;
 
 
   int wvw;      //windowed dimensions

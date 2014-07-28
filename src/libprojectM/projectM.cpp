@@ -125,6 +125,19 @@ beatDetect ( 0 ), renderer ( 0 ),  _pcm(0), m_presetPos(0), m_flags(flags), _pip
 
 }
 
+projectM::projectM(Settings settings, const std::string& shadersDir,
+        const std::string& texturesDir, int flags) :
+    beatDetect ( 0 ), renderer ( 0 ),  _pcm(0), m_presetPos(0), m_flags(flags),
+    _pipelineContext(new PipelineContext()), _pipelineContext2(new PipelineContext())
+{
+    // TODO(igorc): Use settings for shader and texture dirs.
+    this->shadersDir = shadersDir;
+    this->texturesDir = texturesDir;
+    readSettings(settings);
+    projectM_reset();
+    projectM_resetGL(_settings.windowWidth, _settings.windowHeight);
+}
+
 projectM::projectM(Settings settings, int flags):
 beatDetect ( 0 ), renderer ( 0 ),  _pcm(0), m_presetPos(0), m_flags(flags), _pipelineContext(new PipelineContext()), _pipelineContext2(new PipelineContext())
 {
@@ -496,7 +509,9 @@ static void *thread_callback(void *prjm) {
             mspf= ( int ) ( 1000.0/ ( float ) _settings.fps );
         else mspf = 0;
 
-        this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect, settings().presetURL, settings().titleFontURL, settings().menuFontURL );
+        this->renderer = new Renderer ( width, height, gx, gy, texsize,  beatDetect,
+            settings().presetURL, shadersDir, texturesDir, settings().titleFontURL,
+            settings().menuFontURL );
 
         running = true;
 
@@ -940,6 +955,7 @@ void projectM::changeTextureSize(int size) {
   renderer = new Renderer(_settings.windowWidth, _settings.windowHeight,
                           _settings.meshX, _settings.meshY,
                           _settings.textureSize, beatDetect, _settings.presetURL,
+                          shadersDir, texturesDir,
                           _settings.titleFontURL, _settings.menuFontURL);
 }
 
