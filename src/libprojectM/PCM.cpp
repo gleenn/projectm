@@ -30,7 +30,7 @@
 
 #include "Common.hpp"
 #include "wipemalloc.h"
-#include "fftsg.h"
+#include "fft.h"
 #include "PCM.hpp"
 #include <cassert>
 
@@ -78,6 +78,7 @@ void PCM::initPCM(int samples) {
   ip= (int *)wipemalloc(maxsamples*sizeof(int));
   ip[0]=0;
 
+  fft.Init(512, 512, -1);
 
     /** PCM data */
 //    this->maxsamples = 2048;
@@ -295,14 +296,15 @@ void PCM::getPCM(float *PCMdata, int samples, int channel, int freq, float smoot
    //return frequency data instead of PCM (perform FFT)
 
    if (freq)
-
      {
-       double temppcm[1024];
-       for (int i=0;i<samples;i++)
-	 {temppcm[i]=(double)PCMdata[i];}
-       rdft(samples, 1, temppcm, ip, w);
-       for (int j=0;j<samples;j++)
-	 {PCMdata[j]=(float)temppcm[j];}
+       float out[512];
+       fft.time_to_frequency_domain(PCMdata, out);
+       memcpy(PCMdata, out, sizeof(out));
+//       for (int i=0;i<samples;i++)
+//	 {temppcm[i]=(double)PCMdata[i];}
+//       rdft(samples, 1, temppcm, ip, w);
+//       for (int j=0;j<samples;j++)
+//	 {PCMdata[j]=(float)temppcm[j];}
      }
 }
 

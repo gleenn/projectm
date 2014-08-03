@@ -30,6 +30,7 @@
 #define _PCM_H
 
 #include "dlldefs.h"
+#include "fft.h"
 
 class 
 #ifdef WIN32 
@@ -40,6 +41,8 @@ public:
     int numsamples; //size of new PCM info
     float *pcmdataL;     //holder for most recent pcm data
     float *pcmdataR;     //holder for most recent pcm data
+    float vdataL[512];  //holders for FFT data (spectrum)
+    float vdataR[512];
 
     static int maxsamples;
     PCM();
@@ -65,10 +68,7 @@ private:
 
     int *ip;
     double *w;
-
-    /** PCM data */
-    float vdataL[512];  //holders for FFT data (spectrum)
-    float vdataR[512];
+    FFT fft;
   };
 
 #endif /** !_PCM_H */

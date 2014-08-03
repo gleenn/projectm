@@ -51,12 +51,12 @@ class DLLEXPORT BeatDetect
 		PCM *pcm;
 
 		/** Methods */
-		BeatDetect(PCM *pcm);
+		BeatDetect(PCM *pcm, int fps);
 		~BeatDetect();
 		void initBeatDetect();
 		void reset();
-		void detectFromSamples();
-		void getBeatVals ( float *vdataL, float *vdataR );
+		void detectFromSamples(int frame);
+		void getBeatVals ( float *vdataL, float *vdataR, int frame );
 	private:
 		/** Vars */
 		float beat_buffer[32][80],
@@ -69,6 +69,12 @@ class DLLEXPORT BeatDetect
 		float vol_buffer[80],
 		vol_instant,
 		vol_history;
+		float imm[3];      // bass, mids, treble (absolute)
+		float imm_rel[3];  // bass, mids, treble (relative to song; 1=avg, 0.9~below, 1.1~above)
+		float avg[3];      // bass, mids, treble (absolute)
+		float avg_rel[3];  // bass, mids, treble (relative to song; 1=avg, 0.9~below, 1.1~above)
+		float long_avg[3]; // bass, mids, treble (absolute)
+		int fps;
 };
 
 #endif /** !_BEAT_DETECT_H */

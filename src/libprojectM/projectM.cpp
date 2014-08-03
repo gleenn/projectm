@@ -349,7 +349,7 @@ static void *thread_callback(void *prjm) {
 
         //m_activePreset->Render(*beatDetect, pipelineContext());
 
-        beatDetect->detectFromSamples();
+        beatDetect->detectFromSamples(timeKeeper->PresetFrameA());
 
         //m_activePreset->evaluateFrame();
 
@@ -508,7 +508,7 @@ static void *thread_callback(void *prjm) {
         if (!_pcm)
             _pcm = new PCM();
         assert(pcm());
-        beatDetect = new BeatDetect ( _pcm );
+        beatDetect = new BeatDetect ( _pcm, fps );
 
         if ( _settings.fps > 0 )
             mspf= ( int ) ( 1000.0/ ( float ) _settings.fps );

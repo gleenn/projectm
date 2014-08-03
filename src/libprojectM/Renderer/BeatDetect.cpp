@@ -26,6 +26,7 @@
  * you'll find it online
  */
 
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -36,10 +37,11 @@
 #include <cmath>
 #include "BeatDetect.hpp"
 
-BeatDetect::BeatDetect(PCM *pcm) {
+BeatDetect::BeatDetect(PCM *pcm, int fps) {
   int x,y; 
 
   this->pcm=pcm;
+  this->fps = fps;
 
   this->vol_instant=0;
   this->vol_history=0;
@@ -71,8 +73,7 @@ BeatDetect::BeatDetect(PCM *pcm) {
     this->mid_att = 0;
     this->bass_att = 0;
     this->vol = 0;
-
-  
+    reset();
   }
 
 BeatDetect::~BeatDetect() 
@@ -87,15 +88,22 @@ void BeatDetect::reset() {
   this->treb_att = 0;
   this->mid_att = 0;
   this->bass_att = 0;
-  }
+  memset(imm, 0, sizeof(imm));
+  memset(imm_rel, 0, sizeof(imm_rel));
+  memset(avg, 0, sizeof(avg));
+  memset(avg_rel, 0, sizeof(avg_rel));
+  memset(long_avg, 0, sizeof(long_avg));
+}
 
-void BeatDetect::detectFromSamples() {
+void BeatDetect::detectFromSamples(int frame) {
     vol_old = vol;
     bass=0;mid=0;treb=0;
 
-    getBeatVals(pcm->pcmdataL,pcm->pcmdataR);
+    getBeatVals(pcm->vdataL, pcm->vdataR, frame);
+    //getBeatVals(pcm->pcmdataL,pcm->pcmdataR);
   }
 
+/*
 void BeatDetect::getBeatVals( float *vdataL,float *vdataR ) {
 
   int linear=0;
@@ -165,6 +173,10 @@ void BeatDetect::getBeatVals( float *vdataL,float *vdataR ) {
 	  if ( projectM_isnan( bass ) ) {
 	    bass = 0.0;
 	  }
+//bass *= 25;
+//mid *= 25;
+//treb *= 25;
+//vol *= 25;
 	  treb_att=.6 * treb_att + .4 * treb;
 	  mid_att=.6 * mid_att + .4 * mid;
 	  bass_att=.6 * bass_att + .4 * bass;
@@ -176,11 +188,75 @@ void BeatDetect::getBeatVals( float *vdataL,float *vdataR ) {
 	  if(treb_att>100)treb_att=100;
 	  if(treb >100)treb=100;
 	  if(vol>100)vol=100;
+
+fprintf(stderr, "b=%.3f ba=%.3f m=%.3f ma=%.3f t=%.3f ta=%.3f v=%.3f\n",
+        bass, bass_att, mid, mid_att, treb, treb_att, vol);
+//fprintf(stderr, "%.3f %.3f %.3f %.3f %.3f %.3f %.3f\n",
+//        vdataL[0], vdataL[1], vdataL[2], vdataL[3], vdataL[4], vdataL[5], vdataL[6]);
 	  
 	   // *vol=(beat_instant[3])/(beat_history[3]);
 	  beat_buffer_pos++;
 	  if( beat_buffer_pos>79)beat_buffer_pos=0;
 	
 }
+*/
 
+static float AdjustRateToFPS(float per_frame_decay_rate_at_fps1, float fps1, float actual_fps)
+{
+    // returns the equivalent per-frame decay rate at actual_fps
+
+    // basically, do all your testing at fps1 and get a good decay rate;
+    // then, in the real application, adjust that rate by the actual fps each time you use it.
+
+    float per_second_decay_rate_at_fps1 = powf(per_frame_decay_rate_at_fps1, fps1);
+    float per_frame_decay_rate_at_fps2 = powf(per_second_decay_rate_at_fps1, 1.0f/actual_fps);
+
+    return per_frame_decay_rate_at_fps2;
+}
+
+void BeatDetect::getBeatVals( float *vdataL,float *vdataR, int frame ) {
+  // sum spectrum up into 3 bands
+  for (int i=0; i<3; i++) {
+    // note: only look at bottom half of spectrum!  (hence divide by 6 instead of 3)
+    int start = 512 * i / 6;
+    int end   = 512 * (i + 1) / 6;
+    imm[i] = 0;
+    for (int j = start; j < end; j++) {
+      imm[i] += vdataL[j];
+    }
+  }
+
+  // do temporal blending to create attenuated and super-attenuated versions
+  for (int i = 0; i < 3; i++) {
+    float rate = (imm[i] > avg[i] ? 0.2f : 0.5f);
+    rate = AdjustRateToFPS(rate, 30.0f, fps);
+    avg[i] = avg[i] * rate + imm[i] * (1 - rate);
+    rate = (frame < 50 ? 0.9f : 0.992f);
+    rate = AdjustRateToFPS(rate, 30.0f, fps);
+    long_avg[i] = long_avg[i] * rate + imm[i] * (1 - rate);
+
+    // also get bass/mid/treble levels *relative to the past*
+    if (fabsf(long_avg[i]) < 0.001f) {
+      imm_rel[i] = 1.0f;
+    } else {
+      imm_rel[i]  = imm[i] / long_avg[i];
+    }
+    if (fabsf(long_avg[i]) < 0.001f) {
+      avg_rel[i]  = 1.0f;
+    } else {
+      avg_rel[i]  = avg[i] / long_avg[i];
+    }
+  }
+
+  bass     = (double)imm_rel[0];
+  mid      = (double)imm_rel[1];
+  treb     = (double)imm_rel[2];
+  bass_att = (double)avg_rel[0];
+  mid_att  = (double)avg_rel[1];
+  treb_att = (double)avg_rel[2];
+  vol      = (bass + mid + treb) / 3.0;
+
+//fprintf(stderr, "b=%.3f ba=%.3f m=%.3f ma=%.3f t=%.3f ta=%.3f v=%.3f\n",
+//        bass, bass_att, mid, mid_att, treb, treb_att, vol);
+}
 
