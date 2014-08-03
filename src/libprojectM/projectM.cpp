@@ -427,6 +427,11 @@ static void *thread_callback(void *prjm) {
             if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
             {
                 //printf("End Smooth\n");
+                // mergePipelines() damages masterAlpha, clear the values now.
+                if (m_activePreset.get())
+                    m_activePreset->pipeline().ClearMasterAlpha();
+                if (m_activePreset2.get())
+                    m_activePreset2->pipeline().ClearMasterAlpha();
                 m_activePreset = m_activePreset2;
                 timeKeeper->EndSmoothing();
             }

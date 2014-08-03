@@ -51,6 +51,8 @@ public:
 	 void setStaticPerPixel(int gx, int gy);
 	 virtual ~Pipeline();
 	 virtual PixelPoint PerPixel(PixelPoint p, const PerPixelContext context);
+
+         void ClearMasterAlpha();
 };
 
 #endif

@@ -47,3 +47,15 @@ if (staticPerPixel)
 //void Pipeline::Render(const BeatDetect &music, const PipelineContext &context){}
 PixelPoint Pipeline::PerPixel(PixelPoint p, const PerPixelContext context)
 {return p;}
+
+void Pipeline::ClearMasterAlpha() {
+  for ( std::vector<RenderItem*>::iterator it = drawables.begin();
+        it != drawables.end(); ++it ) {
+    (*it)->masterAlpha = 1.0;
+  }
+  for ( std::vector<RenderItem*>::iterator it = compositeDrawables.begin();
+        it != compositeDrawables.end(); ++it ) {
+    (*it)->masterAlpha = 1.0;
+  }
+}
+
