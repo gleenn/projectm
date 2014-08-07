@@ -40,6 +40,9 @@ return floor(arg_list[0]);
 }
 
 
+#define isnonzero(x) (fabs(x) > 0.00001)
+
+
 static inline float sqr_wrapper(float * arg_list) {
 	return pow(arg_list[0], 2);
 }
@@ -52,8 +55,8 @@ static inline float sigmoid_wrapper(float * arg_list)
 }
 
 static inline float sign_wrapper(float * arg_list) {
-
-return -arg_list[0];
+	float v = arg_list[0];
+	return fabsf(v + 0.00001) / v;
 }
 
 static inline float min_wrapper(float * arg_list) {
@@ -74,24 +77,19 @@ return arg_list[1];
 
 
 static inline float bor_wrapper(float * arg_list) {
-
-return (float)((int)arg_list[0] || (int)arg_list[1]);
+	return isnonzero(arg_list[0]) || isnonzero(arg_list[1]) ? 1 : 0;
 }
 
 static inline float band_wrapper(float * arg_list) {
-return (float)((int)arg_list[0] && (int)arg_list[1]);
+	return isnonzero(arg_list[0]) && isnonzero(arg_list[1]) ? 1 : 0;
 }
 
 static inline float bnot_wrapper(float * arg_list) {
-return (float)(!(int)arg_list[0]);
+	return isnonzero(arg_list[0]) ? 0 : 1;
 }
 
 static inline float if_wrapper(float * arg_list) {
-
-	if ((int)arg_list[0] == 0)
-		return arg_list[2];
-	//std::cout <<"NOT ZERO: " << arg_list[0] << std::endl;
-	return arg_list[1];
+	return isnonzero(arg_list[0]) ? arg_list[1] : arg_list[2];
 }
 
 
@@ -106,7 +104,7 @@ return l;
 }
 
 static inline float equal_wrapper(float * arg_list) {
-	return (arg_list[0] == arg_list[1]);
+	return fabsf(arg_list[0] - arg_list[1]) < 0.00001;
 }
 
 
