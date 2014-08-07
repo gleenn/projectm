@@ -298,6 +298,7 @@ void PCM::getPCM(float *PCMdata, int samples, int channel, int freq, float smoot
    if (freq)
      {
        float out[512];
+       memset(out, 0, sizeof(out));
        fft.time_to_frequency_domain(PCMdata, out);
        memcpy(PCMdata, out, sizeof(out));
 //       for (int i=0;i<samples;i++)

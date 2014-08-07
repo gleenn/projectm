@@ -100,106 +100,7 @@ void BeatDetect::detectFromSamples(int frame) {
     bass=0;mid=0;treb=0;
 
     getBeatVals(pcm->vdataL, pcm->vdataR, frame);
-    //getBeatVals(pcm->pcmdataL,pcm->pcmdataR);
-  }
-
-/*
-void BeatDetect::getBeatVals( float *vdataL,float *vdataR ) {
-
-  int linear=0;
-  int x,y;
-  float temp2=0;
-
-  vol_instant=0;
-      for ( x=0;x<16;x++)
-	{
-	  
-	  beat_instant[x]=0;
-	  for ( y=linear*2;y<(linear+8+x)*2;y++)
-	    {
-	      beat_instant[x]+=((vdataL[y]*vdataL[y])+(vdataR[y]*vdataR[y]))*(1.0/(8+x)); 
-//	      printf( "beat_instant[%d]: %f %f %f\n", x, beat_instant[x], vdataL[y], vdataR[y] );
-	      vol_instant+=((vdataL[y]*vdataL[y])+(vdataR[y]*vdataR[y]))*(1.0/512.0);
-
-	    }
-//printf("1");	  
-	  linear=y/2;
-	  beat_history[x]-=(beat_buffer[x][beat_buffer_pos])*.0125;
-	  beat_buffer[x][beat_buffer_pos]=beat_instant[x];
-	  beat_history[x]+=(beat_instant[x])*.0125;
-	  
-	  beat_val[x]=(beat_instant[x])/(beat_history[x]);
-	  
-	  beat_att[x]+=(beat_instant[x])/(beat_history[x]);
-
-//printf("2\n");
- 	  
-	}
-//printf("b\n");      
-      vol_history-=(vol_buffer[beat_buffer_pos])*.0125;
-      vol_buffer[beat_buffer_pos]=vol_instant;
-      vol_history+=(vol_instant)*.0125;
-
-      mid=0;
-      for(x=1;x<10;x++)
-	{
-	 mid+=(beat_instant[x]);
-	  temp2+=(beat_history[x]);
-	 
-	}
-
-	 mid=mid/(1.5*temp2);
-	 temp2=0;
-	 treb=0;
- 	  for(x=10;x<16;x++)
-	    { 
-	      treb+=(beat_instant[x]);
-	      temp2+=(beat_history[x]);
-	    }
-//printf("c\n");
-	  treb=treb/(1.5*temp2);
-//	  *vol=vol_instant/(1.5*vol_history);
-	  vol=vol_instant/(1.5*vol_history);
-
-	  bass=(beat_instant[0])/(1.5*beat_history[0]);
-
-	  
-	  if ( projectM_isnan( treb ) ) {
-	    treb = 0.0;
-	  }
-	  if ( projectM_isnan( mid ) ) {
-	    mid = 0.0;
-	  }
-	  if ( projectM_isnan( bass ) ) {
-	    bass = 0.0;
-	  }
-//bass *= 25;
-//mid *= 25;
-//treb *= 25;
-//vol *= 25;
-	  treb_att=.6 * treb_att + .4 * treb;
-	  mid_att=.6 * mid_att + .4 * mid;
-	  bass_att=.6 * bass_att + .4 * bass;
-
-	  if(bass_att>100)bass_att=100;
-	  if(bass >100)bass=100;
-	  if(mid_att>100)mid_att=100;
-	  if(mid >100)mid=100;
-	  if(treb_att>100)treb_att=100;
-	  if(treb >100)treb=100;
-	  if(vol>100)vol=100;
-
-fprintf(stderr, "b=%.3f ba=%.3f m=%.3f ma=%.3f t=%.3f ta=%.3f v=%.3f\n",
-        bass, bass_att, mid, mid_att, treb, treb_att, vol);
-//fprintf(stderr, "%.3f %.3f %.3f %.3f %.3f %.3f %.3f\n",
-//        vdataL[0], vdataL[1], vdataL[2], vdataL[3], vdataL[4], vdataL[5], vdataL[6]);
-	  
-	   // *vol=(beat_instant[3])/(beat_history[3]);
-	  beat_buffer_pos++;
-	  if( beat_buffer_pos>79)beat_buffer_pos=0;
-	
 }
-*/
 
 static float AdjustRateToFPS(float per_frame_decay_rate_at_fps1, float fps1, float actual_fps)
 {
@@ -216,6 +117,21 @@ static float AdjustRateToFPS(float per_frame_decay_rate_at_fps1, float fps1, flo
 
 void BeatDetect::getBeatVals( float *vdataL,float *vdataR, int frame ) {
   // sum spectrum up into 3 bands
+  bool interest = false;
+  for (int i = 0; i < 512; i++) {
+    if (vdataL[i] > 0.1) {
+      interest = true;
+      break;
+    }
+  }
+  if (false && interest) {
+  for (int i = 0; i < 512; i++) {
+    float f = vdataL[i];
+    fprintf(stderr, "%.3f ", f);
+  }
+  fprintf(stderr, "\n");
+  }
+
   for (int i=0; i<3; i++) {
     // note: only look at bottom half of spectrum!  (hence divide by 6 instead of 3)
     int start = 512 * i / 6;
@@ -248,12 +164,13 @@ void BeatDetect::getBeatVals( float *vdataL,float *vdataR, int frame ) {
     }
   }
 
-  bass     = (double)imm_rel[0];
-  mid      = (double)imm_rel[1];
-  treb     = (double)imm_rel[2];
-  bass_att = (double)avg_rel[0];
-  mid_att  = (double)avg_rel[1];
-  treb_att = (double)avg_rel[2];
+  const float kLevelMultiplier = 1.5;
+  bass     = (double) (imm_rel[0] * kLevelMultiplier);
+  mid      = (double) (imm_rel[1] * kLevelMultiplier);
+  treb     = (double) (imm_rel[2] * kLevelMultiplier);
+  bass_att = (double) (avg_rel[0] * kLevelMultiplier);
+  mid_att  = (double) (avg_rel[1] * kLevelMultiplier);
+  treb_att = (double) (avg_rel[2] * kLevelMultiplier);
   vol      = (bass + mid + treb) / 3.0;
 
 //fprintf(stderr, "b=%.3f ba=%.3f m=%.3f ma=%.3f t=%.3f ta=%.3f v=%.3f\n",
