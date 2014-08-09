@@ -316,6 +316,17 @@ static void *thread_callback(void *prjm) {
         m_activePreset2->Render(*beatDetect, pipelineContext2());
     }
 
+    std::vector<double> projectM::getBassData() {
+        std::vector<double> result;
+        result.push_back(beatDetect->bass);
+        result.push_back(beatDetect->bass_att);
+        result.push_back(beatDetect->mid);
+        result.push_back(beatDetect->mid_att);
+        result.push_back(beatDetect->treb);
+        result.push_back(beatDetect->treb_att);
+        return result;
+    }
+
     void projectM::renderFrame()
     {
         #ifdef SYNC_PRESET_SWITCHES

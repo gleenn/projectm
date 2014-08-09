@@ -264,6 +264,9 @@ public:
   void selectPrevious(const bool);
   void selectNext(const bool);
   void selectRandom(const bool);
+
+  std::vector<double> getBassData();
+
 private:
   PCM * _pcm;
   double sampledPresetDuration();
