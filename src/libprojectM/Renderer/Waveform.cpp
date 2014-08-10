@@ -24,7 +24,7 @@ typedef float floatTriple[3];
 typedef float floatQuad[4];
 
 Waveform::Waveform()
-: RenderItem(), samples(512), points(samples), pointContext(samples)
+: RenderItem(), samples(512), points(512), pointContext(512)
 {
 
 	spectrum = false; /* spectrum data or pcm data */
@@ -57,16 +57,18 @@ void Waveform::Draw(RenderContext &context)
 
 			float *value1 = new float[samples];
 			float *value2 = new float[samples];
-			context.beatDetect->pcm->getPCM(value1, 0, spectrum, smoothing, 0);
-			context.beatDetect->pcm->getPCM(value2, 1, spectrum, smoothing, 0);
+			context.beatDetect->pcm->getPCM(value1, samples, 0, spectrum, smoothing, 0);
+			context.beatDetect->pcm->getPCM(value2, samples, 1, spectrum, smoothing, 0);
 			// printf("%f\n",pcmL[0]);
-
 
 			float mult= scaling*( spectrum ? 0.015f :1.0f);
 
-
-				std::transform(&value1[0],&value1[samples],&value1[0],std::bind2nd(std::multiplies<float>(),mult));
-				std::transform(&value2[0],&value2[samples],&value2[0],std::bind2nd(std::multiplies<float>(),mult));
+			std::transform(
+			    &value1[0], &value1[samples], &value1[0],
+			    std::bind2nd(std::multiplies<float>(), mult));
+			std::transform(
+			    &value2[0], &value2[samples], &value2[0],
+			    std::bind2nd(std::multiplies<float>(), mult));
 
 			WaveformContext waveContext(samples, context.beatDetect);
 

@@ -164,7 +164,7 @@ void BeatDetect::getBeatVals( float *vdataL,float *vdataR, int frame ) {
     }
   }
 
-  const float kLevelMultiplier = 1.0;
+  const float kLevelMultiplier = 1.5;
   bass     = (double) (imm_rel[0] * kLevelMultiplier);
   mid      = (double) (imm_rel[1] * kLevelMultiplier);
   treb     = (double) (imm_rel[2] * kLevelMultiplier);

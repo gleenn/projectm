@@ -54,6 +54,8 @@ void PCM::setPCM(const float* data, int samples) {
   memset(vdataL, 0, sizeof(vdataL));
   memset(vdataR, 0, sizeof(vdataR));
 
+  if (samples <= 0)
+    return;
   if (samples > 512)
     samples = 512;
 
@@ -64,30 +66,37 @@ void PCM::setPCM(const float* data, int samples) {
 
   sampleCount = samples;
 
-  getPCM(vdataL, pcmdataL, 1, 0, 0);
-  getPCM(vdataR, pcmdataR, 1, 0, 0);
+  getPCM(vdataL, 512, pcmdataL, 1, 0, 0);
+  getPCM(vdataR, 512, pcmdataR, 1, 0, 0);
 }
 
-void PCM::getPCM(float* dst, int channel, int freq,
+void PCM::getPCM(float* dst, int maxSamples, int channel, int freq,
                  float smoothing, int derive) {
-  getPCM(dst, (channel ? pcmdataR : pcmdataL),
+  getPCM(dst, maxSamples, (channel ? pcmdataR : pcmdataL),
          freq, smoothing, derive);
 }
 
-void PCM::getPCM(float* dst, const float* src, int freq,
+void PCM::getPCM(float* dst, int maxSamples, const float* src, int freq,
                  float smoothing, int derive) {
-  memset(dst, 0, sizeof(float) * 512);
+  memset(dst, 0, sizeof(float) * maxSamples);
+
+  int samples = sampleCount;
+  if (maxSamples < samples)
+    samples = maxSamples;
+
+  if (!samples)
+    return;
 
   dst[0] = src[0];
-  for (int i = 1; i < sampleCount; i++) {
+  for (int i = 1; i < samples; i++) {
     dst[i] = (1 - smoothing) * src[i] + smoothing * dst[i - 1];
   }
 
   if (derive) {
-    for (int i = 0; i < sampleCount - 1; i++) {
+    for (int i = 0; i < samples - 1; i++) {
       dst[i] = dst[i] - dst[i + 1];
     }
-    dst[sampleCount - 1] = 0;
+    dst[samples - 1] = 0;
   }
 
   if (freq) {
@@ -95,7 +104,8 @@ void PCM::getPCM(float* dst, const float* src, int freq,
     float out[512];
     memset(out, 0, sizeof(out));
     fft.time_to_frequency_domain(dst, out);
-    memcpy(dst, out, sizeof(out));
+    // TODO(igorc): Compress spectral data if (samples < 512).
+    memcpy(dst, out, sizeof(float) * samples);
   }
 }
 

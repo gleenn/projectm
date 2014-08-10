@@ -48,11 +48,11 @@ public:
     ~PCM();
 
     void setPCM(const float* data, int samples);
-    void getPCM(float* dst, int channel, int freq,
+    void getPCM(float* dst, int maxSamples, int channel, int freq,
                 float smoothing, int derive);
 
 private:
-    void getPCM(float* dst, const float* src, int freq,
+    void getPCM(float* dst, int maxSamples, const float* src, int freq,
                 float smoothing, int derive);
 
     FFT fft;
