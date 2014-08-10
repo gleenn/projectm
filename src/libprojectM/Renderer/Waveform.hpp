@@ -52,7 +52,7 @@ public:
     float smoothing; /* smooth factor of waveform */
     int sep;  /* no idea what this is yet... */
 
-    Waveform(int samples);
+    Waveform();
     void Draw(RenderContext &context);
 
 private:

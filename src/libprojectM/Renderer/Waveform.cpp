@@ -23,8 +23,8 @@ typedef float floatPair[2];
 typedef float floatTriple[3];
 typedef float floatQuad[4];
 
-Waveform::Waveform(int samples)
-: RenderItem(),samples(samples), points(samples), pointContext(samples)
+Waveform::Waveform()
+: RenderItem(), samples(512), points(samples), pointContext(samples)
 {
 
 	spectrum = false; /* spectrum data or pcm data */
@@ -57,8 +57,8 @@ void Waveform::Draw(RenderContext &context)
 
 			float *value1 = new float[samples];
 			float *value2 = new float[samples];
-			context.beatDetect->pcm->getPCM( value1, samples, 0, spectrum, smoothing, 0);
-			context.beatDetect->pcm->getPCM( value2, samples, 1, spectrum, smoothing, 0);
+			context.beatDetect->pcm->getPCM(value1, 0, spectrum, smoothing, 0);
+			context.beatDetect->pcm->getPCM(value2, 1, spectrum, smoothing, 0);
 			// printf("%f\n",pcmL[0]);
 
 

@@ -194,7 +194,7 @@ void MilkdropWaveform::WaveformMath(RenderContext &context)
 			temp_y=-1*(y-1.0);
 
 
-			samples = 0? 512-32 : context.beatDetect->pcm->numsamples;
+			samples = 0? 512-32 : context.beatDetect->pcm->sampleCount;
 
 			float inv_nverts_minus_one = 1.0f/(float)(samples);
 
@@ -325,7 +325,7 @@ void MilkdropWaveform::WaveformMath(RenderContext &context)
 			rot = -mystery*90;
 			aspectScale =1.0+wave_x_temp;
 			wave_x_temp=-1*(x-1.0);
-			samples = 0 ? 512-32 : context.beatDetect->pcm->numsamples;
+			samples = 0 ? 512-32 : context.beatDetect->pcm->sampleCount;
 
 			for ( int i=0;i<  samples;i++)
 			{
@@ -347,7 +347,7 @@ void MilkdropWaveform::WaveformMath(RenderContext &context)
 			aspectScale =1.0+wave_x_temp;
 
 
-			samples = 0 ? 512-32 : context.beatDetect->pcm->numsamples;
+			samples = 0 ? 512-32 : context.beatDetect->pcm->sampleCount;
 			two_waves = true;
 
 			double y_adj = y*y*.5;

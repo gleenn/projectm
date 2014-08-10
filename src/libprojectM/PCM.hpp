@@ -38,37 +38,24 @@ DLLEXPORT
 #endif 
 PCM {
 public:
-    int numsamples; //size of new PCM info
-    float *pcmdataL;     //holder for most recent pcm data
-    float *pcmdataR;     //holder for most recent pcm data
-    float vdataL[512];  //holders for FFT data (spectrum)
+    int sampleCount;         // the number of active samples
+    float pcmdataL[512];     // holder for most recent pcm data
+    float pcmdataR[512];     // holder for most recent pcm data
+    float vdataL[512];       // holders for FFT data (spectrum)
     float vdataR[512];
 
-    static int maxsamples;
     PCM();
     ~PCM();
-    void initPCM(int maxsamples);
-    void addPCMfloat(const float *PCMdata, int samples);
-    void addPCM16(short [2][512]);
-    void addPCM16Data(const short* pcm_data, short samples);
-    void addPCM8( unsigned char [2][1024]);
-	void addPCM8_512( const unsigned char [2][512]);
-    void getPCM(float *data, int samples, int channel, int freq, float smoothing, int derive);
+
+    void setPCM(const float* data, int samples);
+    void getPCM(float* dst, int channel, int freq,
+                float smoothing, int derive);
 
 private:
-    void freePCM();
-    int getPCMnew(float *PCMdata, int channel, int freq, float smoothing, int derive,int reset);
+    void getPCM(float* dst, const float* src, int freq,
+                float smoothing, int derive);
 
-    float **PCMd;
-    int start;
-    int newsamples;
-
-    /** Use wave smoothing */
-    float waveSmoothing;
-
-    int *ip;
-    double *w;
     FFT fft;
-  };
+};
 
 #endif /** !_PCM_H */

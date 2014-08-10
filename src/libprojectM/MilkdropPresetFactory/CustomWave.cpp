@@ -43,7 +43,7 @@
 #define MAX_SAMPLE_SIZE 4096
 
 
-CustomWave::CustomWave(int _id) : Waveform(512),
+CustomWave::CustomWave(int _id) : Waveform(),
     id(_id),
     per_frame_count(0),
     r(0),
