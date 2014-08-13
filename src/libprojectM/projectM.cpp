@@ -316,15 +316,15 @@ static void *thread_callback(void *prjm) {
         m_activePreset2->Render(*beatDetect, pipelineContext2());
     }
 
-    std::vector<double> projectM::getBassData() {
-        std::vector<double> result;
-        result.push_back(beatDetect->bass);
-        result.push_back(beatDetect->bass_att);
-        result.push_back(beatDetect->mid);
-        result.push_back(beatDetect->mid_att);
-        result.push_back(beatDetect->treb);
-        result.push_back(beatDetect->treb_att);
-        return result;
+    void projectM::getBassData(double* bass, double* bass_att,
+                               double* mid, double* mid_att,
+                               double* treb, double* treb_att) {
+        *bass = beatDetect->bass;
+        *bass_att = beatDetect->bass_att;
+        *mid = beatDetect->mid;
+        *mid_att = beatDetect->mid_att;
+        *treb = beatDetect->treb;
+        *treb_att = beatDetect->treb_att;
     }
 
     void projectM::renderFrame()

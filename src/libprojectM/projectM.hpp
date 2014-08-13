@@ -265,7 +265,9 @@ public:
   void selectNext(const bool);
   void selectRandom(const bool);
 
-  std::vector<double> getBassData();
+  void getBassData(double* bass, double* bass_att,
+                   double* mid, double* mid_att,
+                   double* treb, double* treb_att);
 
 private:
   PCM * _pcm;
