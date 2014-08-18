@@ -18,8 +18,8 @@ public:
 
   void UpdateTimers();
 
-  void StartPreset();
-  void StartSmoothing();
+  void StartPreset(double rating);
+  void StartSmoothing(double rating);
   void EndSmoothing();
  
   bool CanHardCut();
@@ -53,6 +53,7 @@ private:
   double _presetDurationA;
   double _presetDurationB;
   double _smoothDuration;
+  double _rating;
 
   double _currentTime;
   double _presetTimeA;

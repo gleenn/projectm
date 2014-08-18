@@ -553,7 +553,7 @@ static void *thread_callback(void *prjm) {
 
         /// @bug order of operatoins here is busted
         //renderer->setPresetName ( m_activePreset->name() );
-        timeKeeper->StartPreset();
+        timeKeeper->StartPreset(5.0);
         assert(pcm());
 
        pipelineContext().fps = fps;
@@ -738,7 +738,7 @@ static void *thread_callback(void *prjm) {
 			return;
 
 		if (!hardCut) {
-                	timeKeeper->StartSmoothing();
+                	timeKeeper->StartSmoothing(5.0);
 		}
 
 		*m_presetPos = m_presetChooser->begin(index);
@@ -747,7 +747,7 @@ static void *thread_callback(void *prjm) {
 			switchPreset(m_activePreset2);
 		} else {
 			switchPreset(m_activePreset);
-			timeKeeper->StartPreset();
+			timeKeeper->StartPreset(5.0);
 		}
 
 	presetSwitchedEvent(hardCut, **m_presetPos);
@@ -761,7 +761,7 @@ void projectM::selectRandom(const bool hardCut) {
 			return;
 
 		if (!hardCut) {
-                	timeKeeper->StartSmoothing();
+                	timeKeeper->StartSmoothing(5.0);
 		}
 
 		*m_presetPos = m_presetChooser->weightedRandom(hardCut);
@@ -770,7 +770,7 @@ void projectM::selectRandom(const bool hardCut) {
 			switchPreset(m_activePreset2);
 		} else {
 			switchPreset(m_activePreset);
-			timeKeeper->StartPreset();
+			timeKeeper->StartPreset(5.0);
 		}
 
 		presetSwitchedEvent(hardCut, **m_presetPos);
@@ -783,7 +783,7 @@ void projectM::selectPrevious(const bool hardCut) {
 			return;
 
 		if (!hardCut) {
-                	timeKeeper->StartSmoothing();
+                	timeKeeper->StartSmoothing(5.0);
 		}
 
 		m_presetChooser->previousPreset(*m_presetPos);
@@ -792,7 +792,7 @@ void projectM::selectPrevious(const bool hardCut) {
 			switchPreset(m_activePreset2);
 		} else {
 			switchPreset(m_activePreset);
-			timeKeeper->StartPreset();
+			timeKeeper->StartPreset(5.0);
 		}
 
 		presetSwitchedEvent(hardCut, **m_presetPos);
@@ -811,7 +811,7 @@ void projectM::selectNext(const bool hardCut) {
 			return;
 
 		if (!hardCut) {
-                	timeKeeper->StartSmoothing();
+                	timeKeeper->StartSmoothing(5.0);
 			std::cout << "start smoothing" << std::endl;
 		}
 
@@ -821,7 +821,7 @@ void projectM::selectNext(const bool hardCut) {
 			switchPreset(m_activePreset2);
 		} else {
 			switchPreset(m_activePreset);
-			timeKeeper->StartPreset();
+			timeKeeper->StartPreset(5.0);
 		}
 		presetSwitchedEvent(hardCut, **m_presetPos);
 

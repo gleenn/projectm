@@ -18,7 +18,7 @@ class Preset {
 public:
 
 	
-	Preset(const std::string & name=std::string(), const std::string & author = std::string());
+	Preset(const std::string & name=std::string(), const std::string & author = std::string(), double rating=5.0);
 	virtual ~Preset();
 
 	void setName(const std::string & value);
@@ -27,12 +27,15 @@ public:
 	void setAuthor(const std::string & value);
 	const std::string & author() const;
 
+	double rating() const { return _rating; }
+
 	virtual Pipeline & pipeline() = 0;
 	virtual void Render(const BeatDetect &music, const PipelineContext &context) = 0;
 
 private:
 	std::string _name;
 	std::string _author;
+	double _rating;
 };
 
 #endif /* PRESET_HPP_ */

@@ -9,8 +9,8 @@
 
 Preset::~Preset() {}
 
-Preset::Preset(const std::string & presetName, const std::string & presetAuthor):
-	_name(presetName), _author(presetAuthor) {}
+Preset::Preset(const std::string & presetName, const std::string & presetAuthor, double rating):
+	_name(presetName), _author(presetAuthor), _rating(rating) {}
 
 void Preset::setName(const std::string & value) { _name = value; }
 

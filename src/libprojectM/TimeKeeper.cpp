@@ -2,6 +2,7 @@
 #include <sys/time.h>
 #else
 #endif /** !WIN32 */
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "TimeKeeper.hpp"
@@ -12,6 +13,7 @@ TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double east
     _smoothDuration = smoothDuration;
     _presetDuration = presetDuration;
     _easterEgg = easterEgg;
+    _rating = 3.0;
 
 #ifndef WIN32
 	gettimeofday ( &this->startTime, NULL );
@@ -35,20 +37,24 @@ TimeKeeper::TimeKeeper(double presetDuration, double smoothDuration, double east
 
   }
 
-  void TimeKeeper::StartPreset()
+  void TimeKeeper::StartPreset(double rating)
   {
     _isSmoothing = false;
     _presetTimeA = _currentTime;
     _presetFrameA = 1;
+    _rating = fmin(5.0, fmax(1.0, rating)) - 1.0;
     _presetDurationA = sampledPresetDuration();
   }
-  void TimeKeeper::StartSmoothing()
+
+  void TimeKeeper::StartSmoothing(double rating)
   {
     _isSmoothing = true;
     _presetTimeB = _currentTime;
     _presetFrameB = 1;
+    _rating = fmin(5.0, fmax(1.0, rating)) - 1.0;
     _presetDurationB = sampledPresetDuration();
   }
+
   void TimeKeeper::EndSmoothing()
   {
     _isSmoothing = false;
@@ -100,8 +106,11 @@ double TimeKeeper::sampledPresetDuration() {
 #ifdef WIN32
 	return  _presetDuration;
 #else
-	return  _presetDuration;
-	//return fmax(1, fmin(60, RandomNumberGenerators::gaussian
-	//	(_presetDuration, _easterEgg)));
+	double d = _presetDuration / 2.0;
+        d = d + d * (_rating / 4.0);
+	//fprintf(stderr, "Sampled duration = %f, rating=%f\n", d, _rating);
+	//return d;
+	return fmax(1, fmin(1000, RandomNumberGenerators::gaussian
+		(d, _easterEgg)));
 #endif
 }
